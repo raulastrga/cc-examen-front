@@ -1019,7 +1019,7 @@ app.controller('Index', function ($scope, Notification) {
 
         if ($scope.usuario === undefined) {
             if(window.location.pathname.search('index.html') === -1) {
-                document.location.href = $(location).attr('href') + '/login.html';
+                document.location.href = $(location).attr('href') + 'login.html';
             } else {
                 var url = $(location).attr('href');
                 var login = url.replace('index.html', 'login.html');

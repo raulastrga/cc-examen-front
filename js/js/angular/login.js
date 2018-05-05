@@ -19,7 +19,7 @@ app.controller('Login', function ($scope, Notification) {
                         $scope.pagina = "ventas";
                         $scope.$apply();
                 
-                        document.location.href = window.location.pathname.replace('login.html', 'index.html');
+                        document.location.href = $(location).attr('href').replace('login.html', 'index.html');
                     } else {
                         Notification.warning({
                             message: 'Usuario y/o contraseña incorrectos.',
