@@ -1,0 +1,216 @@
+<div class="row" ng-init="initVentas(true)">
+    <div class="col s12 m12 l12 xl12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Ventas activas</span>
+                <table id="data-table-ventas" class="responsive-table display" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Folio Venta</th>
+                            <th>Clave Cliente</th>
+                            <th>Nombre</th>
+                            <th>Total</th>
+                            <th>Fecha</th>
+                            <th>Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="venta in ventas">
+                            <td>{{venta.folio}}</td>
+                            <td>{{venta.claveCliente}}</td>
+                            <td>{{venta.nombreCliente}}</td>
+                            <td>{{venta.total | currency : $ : 2}}</td>
+                            <td>{{venta.fecha | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+                            <td>{{venta.estatus === 1 ? 'Pendiente' : 'Pagada'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large blue">
+        <i class="large material-icons">add</i>
+    </a>
+    <ul>
+        <li>
+            <a class="btn-floating green" ng-click="modalNuevaVenta()">
+                <i class="large material-icons">add_shopping_cart</i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div id="modalNuevaVenta" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <div ng-if="proceso === 'paso1'"> <!-- Paso 1 -->
+            <h4>Registro de ventas</h4>
+            <div class="row">
+                <div class="col s3 offset-s9">
+                    <b>Folio Venta: {{folioVenta}}</b>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s7">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">person</i>
+                        <input autocomplete="off" type="text" id="autocomplete-input-cliente" class="autocomplete" placeholder="Buscar Cliente" ng-keyup="buscarCliente()">
+                        <label for="autocomplete-input-cliente" class="active">Cliente</label>
+                    </div>
+                </div>
+                <div class="col s5" ng-show="clienteSeleccionado !== undefined">
+                    <div class="input-field col s6">
+                        <input id="rfc" type="text" class="validate" ng-model="clienteSeleccionado.rfc" disabled>
+                        <label for="rfc" class="active">RFC</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="s12">
+                    <div class="divider"></div>
+                </div>
+            </div>
+            <div class="row espacio-arriba-fila">
+                <div class="col s7">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">person</i>
+                        <input autocomplete="off" type="text" id="autocomplete-input-articulo" class="autocomplete" placeholder="Buscar Artículo" ng-keyup="buscarArticulo()">
+                        <label for="autocomplete-input-articulo" class="active">Artículo</label>
+                    </div>
+                </div>
+                <div class="col s5 espacio-arriba-boton" ng-show="articuloSeleccionado !== undefined">
+                    <button class="btn waves-effect waves-light green white-text" ng-click="agregarArticulo()">
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="s12">
+                    <div class="divider"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <table class="responsive-table display" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Descripción Artículo</th>
+                                <th>Modelo</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Importe</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="articulo in detalleVenta">
+                                <td>{{articulo.descripcion}}</td>
+                                <td>{{articulo.modelo}}</td>
+                                <td>
+                                    <div class="input-field ancho-cantidad">
+                                        <input focus-me="articulo.focus" type="number" ng-model="articulo.cantidad" class="center-align" min="1" minlength="1" ng-change="cambiarCantidad(articulo.id)">
+                                    </div>
+                                </td>
+                                <td>{{articulo.precio | number: 2}}</td>
+                                <td>{{articulo.importe | number: 2}}</td>
+                                <th><button class="btn-floating waves-effect waves-light red white-text" ng-click="eliminarArticulo(articulo)"><i class="material-icons">close</i></button></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="s12">
+                    <div class="divider"></div>
+                </div>
+            </div>
+            <div ng-if="detalleVenta !== undefined && detalleVenta.length > 0">
+                <div class="row espacio-arriba-fila-totales">
+                    <div class="col s3 offset-s7 espacio-arriba-label right-align">
+                        Enganche: 
+                    </div>
+                    <div class="col s2">
+                        <div class="ancho-cantidad">
+                            <input type="text" ng-value="enganche | currency : $ : 2" class="right-align input-totales">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s3 offset-s7 espacio-arriba-label right-align">
+                        Bonificación Enganche: 
+                    </div>
+                    <div class="col s2">
+                        <div class="ancho-cantidad">
+                            <input type="text" ng-value="bonificacionEnganche | currency : $ : 2" class="right-align input-totales">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s3 offset-s7 espacio-arriba-label right-align">
+                        Total:
+                    </div>
+                    <div class="col s2">
+                        <div class="ancho-cantidad">
+                            <input type="text" ng-value="totalAdeudo | currency : $ : 2" class="right-align input-totales">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="proceso === 'paso2'"> <!-- Paso 2 -->
+            <h4>Abonos Mensuales</h4>
+            <table class="responsive-table display bordered striped highlight" cellspacing="0">
+                <tbody>
+                    <tr ng-repeat="plazo in plazos">
+                        <td>{{plazo.plazo}} ABONOS DE</td>
+                        <td>{{plazo.importeAbono | currency : $ : 2}}</td>
+                        <td>TOTAL A PAGAR {{plazo.totalPagar | currency : $ : 2}}</td>
+                        <td>SE AHORRA {{plazo.importeAhorra | currency : $ : 2}}</td>
+                        <td>
+                            <input class="with-gap" name="plazos" type="radio" value="{{plazo.plazo}}" ng-model="$parent.plazoSeleccionado" id="plazo-{{plazo.plazo}}" />
+                            <label for="plazo-{{plazo.plazo}}"></label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="input-field col s12 right-align" >
+            <button class="btn cyan darken-1 waves-effect waves-light" type="button" ng-click="cerrarModalVenta()" ng-if="proceso === 'paso1'">
+                <i class="material-icons left">close</i> Cancelar
+            </button>
+            <button class="btn green darken-1 waves-effect waves-light" type="button" ng-click="crearPlazos()" ng-if="proceso === 'paso1' && detalleVenta !== undefined && detalleVenta.length > 0">
+                <i class="material-icons right">arrow_forward</i> Siguiente
+            </button>
+            <button class="btn cyan darken-1 waves-effect waves-light" type="button" ng-click="atrasModalVenta()" ng-if="proceso === 'paso2'" ng-show="!cargando">
+                <i class="material-icons left">arrow_back</i> Atras
+            </button>
+            <button
+                class="btn green darken-1 waves-effect waves-light"
+                type="button"
+                ng-click="guardarVenta()"
+                ng-show="!cargando"
+                ng-if="proceso === 'paso2'">
+                    <i class="material-icons right">save</i> Guardar
+            </button>
+        </div>
+        <div class="input-field col s12 right-align" ng-show="cargando">
+            <div class="preloader-wrapper small active">
+                <div class="spinner-layer spinner-green-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

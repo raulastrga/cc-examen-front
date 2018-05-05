@@ -1,0 +1,162 @@
+<div class="row" ng-init="initArticulos(true)">
+    <div class="col s12 m12 l12 xl12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Articulos registrados</span>
+                <table id="data-table-articulos" class="responsive-table display" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Clave Artículo</th>
+                            <th>Descripción</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="articulo in articulos">
+                            <td>{{articulo.clave}}</td>
+                            <td>{{articulo.descripcion}}</td>
+                            <th><button class="btn-floating waves-effect waves-light cyan white-text" ng-click="modalEditarArticulo(articulo)"><i class="material-icons">edit</i></button></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large blue">
+        <i class="large material-icons">add</i>
+    </a>
+    <ul>
+        <li>
+            <a class="btn-floating green" ng-click="modalNuevoArticulo()">
+                <i class="large material-icons">note_add</i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div id="modalNuevoArticulo" class="modal">
+    <div class="modal-content">
+        <h4>Registro de Artículos</h4>
+        <div class="row">
+            <div class="col s3 offset-s9">
+                <b>Clave: {{claveArticulo}}</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s10">
+                <input id="descripcion" type="text" ng-model="articuloNuevo.descripcion">
+                <label for="descripcion">Descripción</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s10">
+                <input id="modelo" type="text" ng-model="articuloNuevo.modelo">
+                <label for="modelo">Modelo</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s10">
+                <input id="precio" type="text" ng-model="articuloNuevo.precio">
+                <label for="precio">Precio</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <input id="existencia" type="number" min="1" minlength="1" ng-model="articuloNuevo.existencia">
+                <label for="existencia">Existencia</label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer borde-arriba">
+        <div class="row">
+            <div class="input-field col s12 right-align" >
+                <button class="btn cyan darken-1 waves-effect waves-light" type="button" ng-click="cerrarModalArticulo()" ng-show="!cargando">
+                    <i class="material-icons left">close</i> Cancelar
+                </button>
+                <button class="btn green darken-1 waves-effect waves-light" type="button" ng-click="guardarArticulo()" ng-show="!cargando">
+                    <i class="material-icons right">save</i> Guardar
+                </button>
+            </div>
+            <div class="input-field col s12 right-align" ng-show="cargando">
+                <div class="preloader-wrapper small active">
+                    <div class="spinner-layer spinner-green-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEditarArticulo" class="modal">
+        <div class="modal-content">
+            <h4>Modificar Articulo</h4>
+            <div class="row">
+                <div class="col s3 offset-s9">
+                    <b>Clave: {{articuloEditar.clave}}</b>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s10">
+                    <input id="descripcion" type="text" ng-model="articuloEditar.descripcion">
+                    <label for="descripcion" class="active">Descripción</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s10">
+                    <input id="modelo" type="text" ng-model="articuloEditar.modelo">
+                    <label for="modelo" class="active">Modelo</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s10">
+                    <input id="precio" type="text" ng-model="articuloEditar.precio">
+                    <label for="precio" class="active">Precio</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="existencia" type="number" min="1" minlength="1" ng-model="articuloEditar.existencia">
+                    <label for="existencia" class="active">Existencia</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer borde-arriba">
+            <div class="row">
+                <div class="input-field col s12 right-align" >
+                    <button class="btn cyan darken-1 waves-effect waves-light" type="button" ng-click="cerrarModalArticuloEditar()" ng-show="!cargando">
+                        <i class="material-icons left">close</i> Cancelar
+                    </button>
+                    <button class="btn green darken-1 waves-effect waves-light" type="button" ng-click="guardarArticuloEditar()" ng-show="!cargando">
+                        <i class="material-icons right">save</i> Guardar
+                    </button>
+                </div>
+                <div class="input-field col s12 right-align" ng-show="cargando">
+                    <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-green-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,66 @@
+<div class="row" ng-init="initConfiguracion(true)">
+    <div class="col s12 m12 l12 xl12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Configuración General</span>
+                <div class="row">
+                    <div class="input-field col s2">
+                        <input id="tasaFinanciamiento" type="text" ng-model="configuracion.tasaFinanciamiento">
+                        <label for="tasaFinanciamiento" class="active">Tasa Financiamiento</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s2">
+                        <input id="porcentajeEnganche" type="text" ng-model="configuracion.porcentajeEnganche">
+                        <label for="porcentajeEnganche" class="active">Porcentaje Enganche</label>
+                    </div>
+                </div>
+                <div class="row plazos-configuracion">
+                    <p>
+                        Plazo Máximo
+                    </p>
+                    <p>
+                        <input class="with-gap" name="plazoMaximo" type="radio" id="plazoMaximo3" ng-model="configuracion.plazoMaximo" value="3">
+                        <label for="plazoMaximo3">3</label>
+                    </p>
+                    <p>
+                        <input class="with-gap" name="plazoMaximo" type="radio" id="plazoMaximo6" ng-model="configuracion.plazoMaximo" value="6">
+                        <label for="plazoMaximo6">6</label>
+                    </p>
+                    <p>
+                        <input class="with-gap" name="plazoMaximo" type="radio" id="plazoMaximo9" ng-model="configuracion.plazoMaximo" value="9">
+                        <label for="plazoMaximo9">9</label>
+                    </p>
+                    <p>
+                        <input class="with-gap" name="plazoMaximo" type="radio" id="plazoMaximo12" ng-model="configuracion.plazoMaximo" value="12">
+                        <label for="plazoMaximo12">12</label>
+                    </p>
+                </div>
+            </div>
+            <div class="card-action">
+                <div class="row">
+                    <div class="input-field col s12 right-align" >
+                        <button class="btn green darken-1 waves-effect waves-light" type="button" ng-click="guardarConfiguracion()" ng-show="!cargando">
+                            <i class="material-icons right">save</i> Guardar
+                        </button>
+                    </div>
+                    <div class="input-field col s12 right-align" ng-show="cargando">
+                        <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-green-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
