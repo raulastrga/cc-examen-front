@@ -7,7 +7,7 @@ app.controller('Index', function ($scope, Notification) {
 
     $scope.initConfiguracion = function (render) {
         //Obtiene el listado de ventas registradas
-        $.get('http://localhost:3000/api/Configuraciones', function (data) {
+        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
             if (data.length > 0) {
                 //Se obtiene la configuración desde la BD
                 $scope.configuracion = data[0];
@@ -66,7 +66,7 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para registrar el articulo
-        $.post('http://localhost:3000/api/Configuraciones/registrar',  configuracion, function (data) {
+        $.post('http://35.231.233.240:3000/api/Configuraciones/registrar',  configuracion, function (data) {
             Notification.success({
                 message: 'Bien Hecho, La Configuración ha sido registrada correctamente.',
                 delay: 4500,
@@ -146,7 +146,7 @@ app.controller('Index', function ($scope, Notification) {
 
     $scope.initArticulos = function (render) {
         //Obtiene el listado de ventas registradas
-        $.get('http://localhost:3000/api/Articulos', function (data) {
+        $.get('http://35.231.233.240:3000/api/Articulos', function (data) {
             $scope.articulos = data;
             $scope.$apply();
             render ? renderTable('articulos') : null;
@@ -158,7 +158,7 @@ app.controller('Index', function ($scope, Notification) {
         $('#modalNuevoArticulo').modal('open');
 
         //Obtiene el folio del nuevo artículo
-        $.get('http://localhost:3000/api/Configuraciones', function (data) {
+        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
             data = data[0];
             $scope.claveArticulo = data.ultimoArticulo + 1;
             $scope.articuloNuevo = {};
@@ -211,7 +211,7 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para registrar el articulo
-        $.post('http://localhost:3000/api/Articulos/registrar',  articulo, function (data) {
+        $.post('http://35.231.233.240:3000/api/Articulos/registrar',  articulo, function (data) {
             Notification.success({
                 message: 'Bien Hecho, El Articulo ha sido registrado correctamente.',
                 delay: 4500,
@@ -266,7 +266,7 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para actualizar el articulo
-        $.post('http://localhost:3000/api/Articulos/editar',  articulo, function (data) {
+        $.post('http://35.231.233.240:3000/api/Articulos/editar',  articulo, function (data) {
             Notification.success({
                 message: 'Bien Hecho, El Articulo ha sido actualizado correctamente.',
                 delay: 4500,
@@ -361,7 +361,7 @@ app.controller('Index', function ($scope, Notification) {
     /* Métodos para módulo de Clientes */
     $scope.initClientes = function (render) {
         //Obtiene el listado de ventas registradas
-        $.get('http://localhost:3000/api/Clientes', function (data) {
+        $.get('http://35.231.233.240:3000/api/Clientes', function (data) {
             $scope.clientes = data;
             $scope.$apply();
             render ? renderTable('clientes') : null;
@@ -373,7 +373,7 @@ app.controller('Index', function ($scope, Notification) {
         $('#modalNuevoCliente').modal('open');
 
         //Obtiene el folio del nuevo cliente
-        $.get('http://localhost:3000/api/Configuraciones', function (data) {
+        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
             data = data[0];
             $scope.claveCliente = data.ultimoCliente + 1;
             $scope.clienteNuevo = {};
@@ -411,7 +411,7 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para registrar el cliente
-        $.post('http://localhost:3000/api/Clientes/registrar',  cliente, function (data) {
+        $.post('http://35.231.233.240:3000/api/Clientes/registrar',  cliente, function (data) {
             Notification.success({
                 message: 'Bien Hecho, El Cliente ha sido registrado correctamente.',
                 delay: 4500,
@@ -466,7 +466,7 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para actualizar el cliente
-        $.post('http://localhost:3000/api/Clientes/editar',  cliente, function (data) {
+        $.post('http://35.231.233.240:3000/api/Clientes/editar',  cliente, function (data) {
             Notification.success({
                 message: 'Bien Hecho, El Cliente ha sido actualizado correctamente.',
                 delay: 4500,
@@ -552,7 +552,7 @@ app.controller('Index', function ($scope, Notification) {
     /* Métodos para módulo de Ventas */
     $scope.initVentas = function (render) {
         //Obtiene el listado de ventas registradas
-        $.get('http://localhost:3000/api/Ventas', function (data) {
+        $.get('http://35.231.233.240:3000/api/Ventas', function (data) {
             $scope.ventas = data;
             $scope.$apply();
             render ? renderTable('ventas') : null;
@@ -565,7 +565,7 @@ app.controller('Index', function ($scope, Notification) {
        if (texto.length <= 1) return;
 
         //Busca los clientes coincidentes con el texto ingresado
-        $.post('http://localhost:3000/api/Clientes/searchByName', { texto }, function (data) {
+        $.post('http://35.231.233.240:3000/api/Clientes/searchByName', { texto }, function (data) {
             $scope.resultadoClientes = data.clientes;
             var lista = {};
 
@@ -604,7 +604,7 @@ app.controller('Index', function ($scope, Notification) {
        if (texto.length <= 1) return;
 
         //Busca los articulos coincidentes con el texto ingresado
-        $.post('http://localhost:3000/api/Articulos/searchByName', { texto }, function (data) {
+        $.post('http://35.231.233.240:3000/api/Articulos/searchByName', { texto }, function (data) {
             $scope.resultadoArticulos = data.articulos;
             var lista = {};
 
@@ -642,7 +642,7 @@ app.controller('Index', function ($scope, Notification) {
         $('#modalNuevaVenta').modal('open');
 
         //Obtiene el folio de la nueva venta
-        $.get('http://localhost:3000/api/Configuraciones', function (data) {
+        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
             data = data[0];
             if (data != null) {
                 $scope.folioVenta = data.ultimoFolio + 1;
@@ -875,7 +875,7 @@ app.controller('Index', function ($scope, Notification) {
         };
 
         //Se envía la información para registrar la venta
-        $.post('http://localhost:3000/api/Ventas/registrar',  venta, function (data) {
+        $.post('http://35.231.233.240:3000/api/Ventas/registrar',  venta, function (data) {
             if(data !== null) {
                 Notification.success({
                     message: 'Bien Hecho, Tu venta ha sido registrada correctamente.',
