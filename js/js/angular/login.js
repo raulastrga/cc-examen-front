@@ -2,7 +2,7 @@ app.controller('Login', function ($scope, Notification) {
     $scope.iniciarSesion = function () {
         if($scope.password !== undefined && $scope.password.length > 0 && $scope.email !== undefined && $scope.email.length > 0) {
             $scope.iniciando = true;
-            $.post('http://localhost:3000/api/Usuarios/login', {
+            $.post('http://35.231.233.240:3000/api/Usuarios/login', {
                     usuario: $scope.email,
                     password: $scope.password
                 },
