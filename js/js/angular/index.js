@@ -1183,10 +1183,6 @@ app.controller('Index', function ($scope, Notification) {
     }
 
     angular.element(document).ready(function () {
-        //Se obtiene la fecha actual
-        $scope.fechaActual = moment().format("DD/MM/YYYY");
-
-        window.scrollTo(0, 0);
         var usuario = localStorage.getItem('usuario');
         $scope.usuario = usuario === null ? undefined : JSON.parse(usuario);
 
@@ -1199,6 +1195,10 @@ app.controller('Index', function ($scope, Notification) {
                 document.location.href = login;
             }
         } else {
+            //Se obtiene la fecha actual
+            $scope.fechaActual = moment().format("DD/MM/YYYY");
+            window.scrollTo(0, 0);
+
             readHtml('ventas.html', 'htmlVentas');
             readHtml('clientes.html', 'htmlClientes');
             readHtml('articulos.html', 'htmlArticulos');
