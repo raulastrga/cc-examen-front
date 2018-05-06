@@ -163,7 +163,7 @@
             <h4>Abonos Mensuales</h4>
             <table class="responsive-table display bordered striped highlight" cellspacing="0">
                 <tbody>
-                    <tr ng-repeat="plazo in plazos">
+                    <tr ng-repeat="plazo in plazos" ng-if="plazo.plazo <= plazoMaximo">
                         <td>{{plazo.plazo}} ABONOS DE</td>
                         <td>{{plazo.importeAbono | currency : $ : 2}}</td>
                         <td>TOTAL A PAGAR {{plazo.totalPagar | currency : $ : 2}}</td>
