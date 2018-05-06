@@ -197,8 +197,8 @@ app.controller('Index', function ($scope, Notification) {
             url: $scope.servidor + '/Configuraciones',
             type: 'get',
             success: function(data){
+                data = data[0];
                 if (data != null) {
-                    data = data[0];
                     $scope.claveArticulo = data.ultimoArticulo + 1;
                     $scope.articuloNuevo = {};
 
@@ -470,9 +470,9 @@ app.controller('Index', function ($scope, Notification) {
         $.ajax({
             url: $scope.servidor + '/Configuraciones',
             type: 'get',
-            success: function(data){
+            success: function(data) {
+                data = data[0];
                 if (data != null) {
-                    data = data[0];
                     $scope.claveCliente = data.ultimoCliente + 1;
                     $scope.clienteNuevo = {};
 
