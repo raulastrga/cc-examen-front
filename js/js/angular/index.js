@@ -189,9 +189,6 @@ app.controller('Index', function ($scope, Notification) {
     };
 
     $scope.modalNuevoArticulo = function() {
-        $('#modalNuevoArticulo').modal({dismissible: false});
-        $('#modalNuevoArticulo').modal('open');
-
         //Obtiene el folio del nuevo artículo
         $.ajax({
             url: $scope.servidor + '/Configuraciones',
@@ -199,9 +196,13 @@ app.controller('Index', function ($scope, Notification) {
             success: function(data){
                 data = data[0];
                 if (data != null) {
+                    //Abre el modal
+                    $('#modalNuevoArticulo').modal({dismissible: false});
+                    $('#modalNuevoArticulo').modal('open');
+
+                    //Carga la información inicial
                     $scope.claveArticulo = data.ultimoArticulo + 1;
                     $scope.articuloNuevo = {};
-
                     $scope.$apply();
 
                     //Se valida que sólo se ingresen numeros validos en precio
@@ -224,8 +225,6 @@ app.controller('Index', function ($scope, Notification) {
                         delay: 4500,
                         replaceMessage: false
                     });
-
-                    $('#modalNuevoArticulo').modal('close');
                 }
             },
             error: function(err){
@@ -234,8 +233,6 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
-
-                $('#modalNuevoArticulo').modal('close');
             }
         });
     }
@@ -467,9 +464,6 @@ app.controller('Index', function ($scope, Notification) {
     };
 
     $scope.modalNuevoCliente = function() {
-        $('#modalNuevoCliente').modal({dismissible: false});
-        $('#modalNuevoCliente').modal('open');
-
         //Obtiene el folio del nuevo cliente
         $.ajax({
             url: $scope.servidor + '/Configuraciones',
@@ -477,9 +471,13 @@ app.controller('Index', function ($scope, Notification) {
             success: function(data) {
                 data = data[0];
                 if (data != null) {
+                    //Abre modal
+                    $('#modalNuevoCliente').modal({dismissible: false});
+                    $('#modalNuevoCliente').modal('open');
+
+                    //Carga información inicial
                     $scope.claveCliente = data.ultimoCliente + 1;
                     $scope.clienteNuevo = {};
-
                     $scope.$apply();
                 } else {
                     Notification.error({
@@ -487,8 +485,6 @@ app.controller('Index', function ($scope, Notification) {
                         delay: 4500,
                         replaceMessage: false
                     });
-
-                    $('#modalNuevoCliente').modal('close');
                 }
             },
             error: function(err){
@@ -497,8 +493,6 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
-
-                $('#modalNuevoCliente').modal('close');
             }
         });
     }
@@ -823,9 +817,6 @@ app.controller('Index', function ($scope, Notification) {
     };
 
     $scope.modalNuevaVenta = function() {
-        $('#modalNuevaVenta').modal({dismissible: false});
-        $('#modalNuevaVenta').modal('open');
-
         //Obtiene el folio de la nueva venta
         $.ajax({
             url: $scope.servidor + '/Configuraciones',
@@ -833,6 +824,11 @@ app.controller('Index', function ($scope, Notification) {
             success: function(data){
                 data = data[0];
                 if (data != null) {
+                    //Abre modal
+                    $('#modalNuevaVenta').modal({dismissible: false});
+                    $('#modalNuevaVenta').modal('open');
+
+                    //Carga la información inicial
                     $scope.folioVenta = data.ultimoFolio + 1;
                     $scope.tasaFinanciamiento = data.tasaFinanciamiento;
                     $scope.plazoMaximo = data.plazoMaximo;
@@ -845,8 +841,6 @@ app.controller('Index', function ($scope, Notification) {
                         delay: 4500,
                         replaceMessage: false
                     });
-
-                    $('#modalNuevaVenta').modal('close');
                 }
 
                 $scope.$apply();
@@ -857,8 +851,6 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
-
-                $('#modalNuevaVenta').modal('close');
             }
         });
     }
