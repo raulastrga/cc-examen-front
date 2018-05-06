@@ -2,25 +2,37 @@ app.controller('Index', function ($scope, Notification) {
     moment.locale('es');
     $scope.cargando = false;
     $scope.proceso = 'paso1';
+    $scope.servidor = 'http://35.231.233.240:3000/api';
 
     /* Métodos para módulo de Artículos */
 
-    $scope.initConfiguracion = function (render) {
-        //Obtiene el listado de ventas registradas
-        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
-            if (data.length > 0) {
-                //Se obtiene la configuración desde la BD
-                $scope.configuracion = data[0];
-            } else {
-                //Sino existe la configuración en la BD se crea como vacia
-                $scope.configuracion = {
-                    porcentajeEnganche: 0,
-                    tasaFinanciamiento: 0,
-                    plazoMaximo: 0,
-                };
+    $scope.initConfiguracion = function () {
+        //Obtiene la configuración registrada
+        $.ajax({
+            url: $scope.servidor + '/Configuraciones',
+            type: 'get',
+            success: function(data){
+                if (data.length > 0) {
+                    //Se obtiene la configuración desde la BD
+                    $scope.configuracion = data[0];
+                } else {
+                    //Sino existe la configuración en la BD se crea como vacia
+                    $scope.configuracion = {
+                        porcentajeEnganche: 0,
+                        tasaFinanciamiento: 0,
+                        plazoMaximo: 0,
+                    };
+                }
+    
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener las configuraciones, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
             }
-
-            $scope.$apply();
         });
 
         //Se valida que sólo se ingresen numeros validos en tasa financiamiento
@@ -66,16 +78,28 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para registrar el articulo
-        $.post('http://35.231.233.240:3000/api/Configuraciones/registrar',  configuracion, function (data) {
-            Notification.success({
-                message: 'Bien Hecho, La Configuración ha sido registrada correctamente.',
-                delay: 4500,
-                replaceMessage: false
-            });
-
-            //Se reinician los valores por default
-            $scope.cargando = false;
-            $scope.$apply();
+        $.ajax({
+            url: $scope.servidor + '/Configuraciones/registrar',
+            type: 'post',
+            data: configuracion,
+            success: function(data){
+                Notification.success({
+                    message: 'Bien Hecho, La Configuración ha sido registrada correctamente.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+    
+                //Se reinician los valores por default
+                $scope.cargando = false;
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible guardar las configuraciones, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
@@ -144,41 +168,62 @@ app.controller('Index', function ($scope, Notification) {
 
     /* Métodos para módulo de Artículos */
 
-    $scope.initArticulos = function (render) {
-        //Obtiene el listado de ventas registradas
-        $.get('http://35.231.233.240:3000/api/Articulos', function (data) {
-            $scope.articulos = data;
-            $scope.$apply();
-            render ? renderTable('articulos') : null;
+    $scope.initArticulos = function () {
+        //Obtiene el listado de articulos registrados
+        $.ajax({
+            url: $scope.servidor + '/Articulos',
+            type: 'get',
+            success: function(data){
+                $scope.articulos = data;
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener los artículos, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     };
 
     $scope.modalNuevoArticulo = function() {
-        $('#modalNuevoArticulo').modal();
+        $('#modalNuevoArticulo').modal({dismissible: false});
         $('#modalNuevoArticulo').modal('open');
 
         //Obtiene el folio del nuevo artículo
-        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
-            data = data[0];
-            $scope.claveArticulo = data.ultimoArticulo + 1;
-            $scope.articuloNuevo = {};
+        $.ajax({
+            url: $scope.servidor + '/Configuraciones',
+            type: 'get',
+            success: function(data){
+                data = data[0];
+                $scope.claveArticulo = data.ultimoArticulo + 1;
+                $scope.articuloNuevo = {};
 
-            $scope.$apply();
+                $scope.$apply();
 
-            //Se valida que sólo se ingresen numeros validos en precio
-            $("#precio").on('keypress', function(e){
-                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
-                    e.stopImmediatePropagation();
-                    var key = window.event ? event.keyCode : event.which;
-                    if (event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 37 || event.keyCode == 39) {
-                        return true;
-                    } else if ( key < 48 || key > 57 ) {
-                        return false;
-                    } else {
-                        return true;
+                //Se valida que sólo se ingresen numeros validos en precio
+                $("#precio").on('keypress', function(e){
+                    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+                        e.stopImmediatePropagation();
+                        var key = window.event ? event.keyCode : event.which;
+                        if (event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 37 || event.keyCode == 39) {
+                            return true;
+                        } else if ( key < 48 || key > 57 ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
-                }
-            });
+                });
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener el folio del nuevo artículo, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
@@ -210,27 +255,39 @@ app.controller('Index', function ($scope, Notification) {
             existencia: $scope.articuloNuevo.existencia
         }
 
-        //Se envía la información para registrar el articulo
-        $.post('http://35.231.233.240:3000/api/Articulos/registrar',  articulo, function (data) {
-            Notification.success({
-                message: 'Bien Hecho, El Articulo ha sido registrado correctamente.',
-                delay: 4500,
-                replaceMessage: false
-            });
-
-            //Se cierra el modal de nuevo articulo y se reinician los valores
-            $scope.articuloNuevo = {};
-            $('#modalNuevoArticulo').modal('close');
-            $scope.cargando = false;
-            $scope.$apply();
-
-            //Se carga nuevamente la lista de articulos registrados
-            $scope.initArticulos();
+        //Se envía la información para registrar el artículo
+        $.ajax({
+            url: $scope.servidor + '/Articulos/registrar',
+            type: 'post',
+            data: articulo,
+            success: function(data){
+                Notification.success({
+                    message: 'Bien Hecho, El Artículo ha sido registrado correctamente.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+    
+                //Se cierra el modal de nuevo artículo y se reinician los valores
+                $scope.articuloNuevo = {};
+                $('#modalNuevoArticulo').modal('close');
+                $scope.cargando = false;
+                $scope.$apply();
+    
+                //Se carga nuevamente la lista de artículos registrados
+                $scope.initArticulos();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible registrar el artículo, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
     $scope.modalEditarArticulo = function(articulo) {
-        $('#modalEditarArticulo').modal();
+        $('#modalEditarArticulo').modal({dismissible: false});
         $('#modalEditarArticulo').modal('open');
 
         $scope.articuloEditar = articulo;
@@ -266,21 +323,33 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para actualizar el articulo
-        $.post('http://35.231.233.240:3000/api/Articulos/editar',  articulo, function (data) {
-            Notification.success({
-                message: 'Bien Hecho, El Articulo ha sido actualizado correctamente.',
-                delay: 4500,
-                replaceMessage: false
-            });
-
-            //Se cierra el modal de editar articulo y se reinician los valores
-            $scope.articuloEditar = {};
-            $('#modalEditarArticulo').modal('close');
-            $scope.cargando = false;
-            $scope.$apply();
-
-            //Se carga nuevamente la lista de articulos registrados
-            $scope.initArticulos();
+        $.ajax({
+            url: $scope.servidor + '/Articulos/editar',
+            type: 'post',
+            data: articulo,
+            success: function(data){
+                Notification.success({
+                    message: 'Bien Hecho, El Artículo ha sido actualizado correctamente.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+    
+                //Se cierra el modal de editar artiíulo y se reinician los valores
+                $scope.articuloEditar = {};
+                $('#modalEditarArticulo').modal('close');
+                $scope.cargando = false;
+                $scope.$apply();
+    
+                //Se carga nuevamente la lista de artículos registrados
+                $scope.initArticulos();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible actualizar el artículo, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
@@ -359,26 +428,47 @@ app.controller('Index', function ($scope, Notification) {
     /* Fin módulo articulos */
 
     /* Métodos para módulo de Clientes */
-    $scope.initClientes = function (render) {
+    $scope.initClientes = function () {
         //Obtiene el listado de ventas registradas
-        $.get('http://35.231.233.240:3000/api/Clientes', function (data) {
-            $scope.clientes = data;
-            $scope.$apply();
-            render ? renderTable('clientes') : null;
+        $.ajax({
+            url: $scope.servidor + '/Clientes',
+            type: 'get',
+            success: function(data){
+                $scope.clientes = data;
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener los clientes, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     };
 
     $scope.modalNuevoCliente = function() {
-        $('#modalNuevoCliente').modal();
+        $('#modalNuevoCliente').modal({dismissible: false});
         $('#modalNuevoCliente').modal('open');
 
         //Obtiene el folio del nuevo cliente
-        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
-            data = data[0];
-            $scope.claveCliente = data.ultimoCliente + 1;
-            $scope.clienteNuevo = {};
+        $.ajax({
+            url: $scope.servidor + '/Configuraciones',
+            type: 'get',
+            success: function(data){
+                data = data[0];
+                $scope.claveCliente = data.ultimoCliente + 1;
+                $scope.clienteNuevo = {};
 
-            $scope.$apply();
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener el folio del nuevo cliente, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
@@ -411,26 +501,38 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para registrar el cliente
-        $.post('http://35.231.233.240:3000/api/Clientes/registrar',  cliente, function (data) {
-            Notification.success({
-                message: 'Bien Hecho, El Cliente ha sido registrado correctamente.',
-                delay: 4500,
-                replaceMessage: false
-            });
-
-            //Se cierra el modal de nuevo cliente y se reinician los valores
-            $scope.clienteNuevo = {};
-            $('#modalNuevoCliente').modal('close');
-            $scope.cargando = false;
-            $scope.$apply();
-
-            //Se carga nuevamente la lista de clientes registrados
-            $scope.initClientes();
+        $.ajax({
+            url: $scope.servidor + '/Clientes/registrar',
+            type: 'post',
+            data: cliente,
+            success: function(data){
+                Notification.success({
+                    message: 'Bien Hecho, El Cliente ha sido registrado correctamente.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+    
+                //Se cierra el modal de nuevo cliente y se reinician los valores
+                $scope.clienteNuevo = {};
+                $('#modalNuevoCliente').modal('close');
+                $scope.cargando = false;
+                $scope.$apply();
+    
+                //Se carga nuevamente la lista de clientes registrados
+                $scope.initClientes();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible registrar el cliente, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
     $scope.modalEditarCliente = function(cliente) {
-        $('#modalEditarCliente').modal();
+        $('#modalEditarCliente').modal({dismissible: false});
         $('#modalEditarCliente').modal('open');
 
         $scope.clienteEditar = cliente;
@@ -466,21 +568,33 @@ app.controller('Index', function ($scope, Notification) {
         }
 
         //Se envía la información para actualizar el cliente
-        $.post('http://35.231.233.240:3000/api/Clientes/editar',  cliente, function (data) {
-            Notification.success({
-                message: 'Bien Hecho, El Cliente ha sido actualizado correctamente.',
-                delay: 4500,
-                replaceMessage: false
-            });
-
-            //Se cierra el modal de editar cliente y se reinician los valores
-            $scope.clienteEditar = {};
-            $('#modalEditarCliente').modal('close');
-            $scope.cargando = false;
-            $scope.$apply();
-
-            //Se carga nuevamente la lista de clientes registrados
-            $scope.initClientes();
+        $.ajax({
+            url: $scope.servidor + '/Clientes/editar',
+            type: 'post',
+            data: cliente,
+            success: function(data){
+                Notification.success({
+                    message: 'Bien Hecho, El Cliente ha sido actualizado correctamente.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+    
+                //Se cierra el modal de editar cliente y se reinician los valores
+                $scope.clienteEditar = {};
+                $('#modalEditarCliente').modal('close');
+                $scope.cargando = false;
+                $scope.$apply();
+    
+                //Se carga nuevamente la lista de clientes registrados
+                $scope.initClientes();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible actualizar el cliente, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     }
 
@@ -550,12 +664,22 @@ app.controller('Index', function ($scope, Notification) {
 
 
     /* Métodos para módulo de Ventas */
-    $scope.initVentas = function (render) {
+    $scope.initVentas = function () {
         //Obtiene el listado de ventas registradas
-        $.get('http://35.231.233.240:3000/api/Ventas', function (data) {
-            $scope.ventas = data;
-            $scope.$apply();
-            render ? renderTable('ventas') : null;
+        $.ajax({
+            url: $scope.servidor + '/Ventas',
+            type: 'get',
+            success: function(data){
+                $scope.ventas = data;
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener los ventas, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     };
 
@@ -565,36 +689,48 @@ app.controller('Index', function ($scope, Notification) {
        if (texto.length <= 1) return;
 
         //Busca los clientes coincidentes con el texto ingresado
-        $.post('http://35.231.233.240:3000/api/Clientes/searchByName', { texto }, function (data) {
-            $scope.resultadoClientes = data.clientes;
-            var lista = {};
+        $.ajax({
+            url: $scope.servidor + '/Clientes/searchByName',
+            type: 'post',
+            data: { texto },
+            success: function(data){
+                $scope.resultadoClientes = data.clientes;
+                var lista = {};
 
-            for (var i = 0; i < data.clientes.length; ++i) {
-                lista[data.clientes[i].id] = {
-                    imagen: null,
-                    nombre: data.clientes[i].nombre + ' ' + data.clientes[i].apellidoPaterno + ' ' + data.clientes[i].apellidoMaterno
+                for (var i = 0; i < data.clientes.length; ++i) {
+                    lista[data.clientes[i].id] = {
+                        imagen: null,
+                        nombre: data.clientes[i].nombre + ' ' + data.clientes[i].apellidoPaterno + ' ' + data.clientes[i].apellidoMaterno
+                    };
                 };
-            };
-    
-            //Se asigna la lista de resultados coincidentes al autocomplete
-            $('#autocomplete-input-cliente').autocomplete({
-                data: lista,
-                limit: 20,
-                onAutocomplete: function(id) {
-                    //Cuando se eliga un elemento del autocomplete lo asigna como cliente seleccionado
-                    $scope.clienteSeleccionado = $scope.resultadoClientes.filter(function(item){
-                        return item.id === id;
-                    })[0];
+        
+                //Se asigna la lista de resultados coincidentes al autocomplete
+                $('#autocomplete-input-cliente').autocomplete({
+                    data: lista,
+                    limit: 20,
+                    onAutocomplete: function(id) {
+                        //Cuando se eliga un elemento del autocomplete lo asigna como cliente seleccionado
+                        $scope.clienteSeleccionado = $scope.resultadoClientes.filter(function(item){
+                            return item.id === id;
+                        })[0];
 
-                    $scope.$apply();
-                },
-                minLength: 3
-            });
+                        $scope.$apply();
+                    },
+                    minLength: 3
+                });
 
-            //Muestra los resultados del autocomplete
-            $("#autocomplete-input-cliente").keydown();
+                //Muestra los resultados del autocomplete
+                $("#autocomplete-input-cliente").keydown();
 
-            $scope.$apply();
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener los clientes coincidentes, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     };
 
@@ -604,64 +740,87 @@ app.controller('Index', function ($scope, Notification) {
        if (texto.length <= 1) return;
 
         //Busca los articulos coincidentes con el texto ingresado
-        $.post('http://35.231.233.240:3000/api/Articulos/searchByName', { texto }, function (data) {
-            $scope.resultadoArticulos = data.articulos;
-            var lista = {};
+        $.ajax({
+            url: $scope.servidor + '/Articulos/searchByName',
+            type: 'post',
+            data: { texto },
+            success: function(data){
+                $scope.resultadoArticulos = data.articulos;
+                var lista = {};
 
-            for (var i = 0; i < data.articulos.length; ++i) {
-                lista[data.articulos[i].id] = {
-                    imagen: null,
-                    nombre: data.articulos[i].descripcion
+                for (var i = 0; i < data.articulos.length; ++i) {
+                    lista[data.articulos[i].id] = {
+                        imagen: null,
+                        nombre: data.articulos[i].descripcion
+                    };
                 };
-            };
-    
-            //Se asigna la lista de resultados coincidentes al autocomplete
-            $('#autocomplete-input-articulo').autocomplete({
-                data: lista,
-                limit: 20,
-                onAutocomplete: function(id) {
-                    //Cuando se eliga un elemento del autocomplete lo asigna como articulo seleccionado
-                    $scope.articuloSeleccionado = $scope.resultadoArticulos.filter(function(item){
-                        return item.id === id;
-                    })[0];
+        
+                //Se asigna la lista de resultados coincidentes al autocomplete
+                $('#autocomplete-input-articulo').autocomplete({
+                    data: lista,
+                    limit: 20,
+                    onAutocomplete: function(id) {
+                        //Cuando se eliga un elemento del autocomplete lo asigna como articulo seleccionado
+                        $scope.articuloSeleccionado = $scope.resultadoArticulos.filter(function(item){
+                            return item.id === id;
+                        })[0];
 
-                    $scope.$apply();
-                },
-                minLength: 3
-            });
+                        $scope.$apply();
+                    },
+                    minLength: 3
+                });
 
-            //Muestra los resultados del autocomplete
-            $("#autocomplete-input-articulo").keydown();
+                //Muestra los resultados del autocomplete
+                $("#autocomplete-input-articulo").keydown();
 
-            $scope.$apply();
+                $scope.$apply();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible obtener los artículos coincidentes, intente de nuevo más tarde.',
+                    delay: 4500,
+                    replaceMessage: false
+                });
+            }
         });
     };
 
     $scope.modalNuevaVenta = function() {
-        $('#modalNuevaVenta').modal();
+        $('#modalNuevaVenta').modal({dismissible: false});
         $('#modalNuevaVenta').modal('open');
 
         //Obtiene el folio de la nueva venta
-        $.get('http://35.231.233.240:3000/api/Configuraciones', function (data) {
-            data = data[0];
-            if (data != null) {
-                $scope.folioVenta = data.ultimoFolio + 1;
-                $scope.tasaFinanciamiento = data.tasaFinanciamiento;
-                $scope.plazoMaximo = data.plazoMaximo;
-                $scope.porcentajeEnganche = data.porcentajeEnganche;
-                $scope.resultadoClientes = {};
-                $scope.detalleVenta = [];
-            } else {
+        $.ajax({
+            url: $scope.servidor + '/Configuraciones',
+            type: 'get',
+            success: function(data){
+                data = data[0];
+                if (data != null) {
+                    $scope.folioVenta = data.ultimoFolio + 1;
+                    $scope.tasaFinanciamiento = data.tasaFinanciamiento;
+                    $scope.plazoMaximo = data.plazoMaximo;
+                    $scope.porcentajeEnganche = data.porcentajeEnganche;
+                    $scope.resultadoClientes = {};
+                    $scope.detalleVenta = [];
+                } else {
+                    Notification.error({
+                        message: 'Ocurrió un error al obtener la información completa, intente más tarde.',
+                        delay: 4500,
+                        replaceMessage: false
+                    });
+
+                    $('#modalNuevaVenta').modal('close');
+                }
+
+                $scope.$apply();
+            },
+            error: function(err){
                 Notification.error({
-                    message: 'Ocurrió un error al obtener la información completa, intente más tarde.',
+                    message: 'No es posible obtener los clientes, intente de nuevo más tarde.',
                     delay: 4500,
                     replaceMessage: false
                 });
-
-                $('#modalNuevaVenta').modal('close');
             }
-
-            $scope.$apply();
         });
     }
 
@@ -875,25 +1034,40 @@ app.controller('Index', function ($scope, Notification) {
         };
 
         //Se envía la información para registrar la venta
-        $.post('http://35.231.233.240:3000/api/Ventas/registrar',  venta, function (data) {
-            if(data !== null) {
-                Notification.success({
-                    message: 'Bien Hecho, Tu venta ha sido registrada correctamente.',
+        $.ajax({
+            url: $scope.servidor + '/Ventas/registrar',
+            type: 'post',
+            data: venta,
+            success: function(data){
+                if(data !== null) {
+                    Notification.success({
+                        message: 'Bien Hecho, Tu venta ha sido registrada correctamente.',
+                        delay: 4500,
+                        replaceMessage: false
+                    });
+                }
+    
+                //Se cierra el modal de nueva venta y se reinician los valores
+                $('#modalNuevaVenta').modal('close');
+                $scope.articuloSeleccionado = undefined;
+                $scope.clienteSeleccionado = undefined;
+                $scope.plazoSeleccionado = undefined;
+                $scope.cargando = false;
+                $scope.proceso = 'paso1';
+                $scope.$apply();
+
+                //Se cierra el modal
+    
+                //Se carga nuevamente la lista de ventas registradas
+                $scope.initVentas();
+            },
+            error: function(err){
+                Notification.error({
+                    message: 'No es posible registrar la venta, intente de nuevo más tarde.',
                     delay: 4500,
                     replaceMessage: false
                 });
             }
-
-            //Se cierra el modal de nueva venta y se reinician los valores
-            $scope.articuloSeleccionado = undefined;
-            $scope.clienteSeleccionado = undefined;
-            $scope.plazoSeleccionado = undefined;
-            $('#modalNuevaVenta').modal('close');
-            $scope.cargando = false;
-            $scope.$apply();
-
-            //Se carga nuevamente la lista de ventas registradas
-            $scope.initVentas();
         });
     }
 
@@ -974,39 +1148,6 @@ app.controller('Index', function ($scope, Notification) {
                 $scope.$apply();
             }
         });
-    }
-
-    function renderTable (id) {
-        $('#data-table-' + id).DataTable({
-            responsive: true,
-            "displayLength": 20,
-            "language": {
-                "decimal": "",
-                "emptyTable": "No hay registros disponibles",
-                "info": "Mostrando del _START_ al _END_ de _TOTAL_ registros",
-                "infoEmpty": "Mostrando del 0 al 0 de 0 registros",
-                "infoFiltered": "(filtered from _MAX_ total entries)",
-                "infoPostFix": "",
-                "thousands": ",",
-                "lengthMenu": "Mostrar _MENU_ registros",
-                "loadingRecords": "Cargando...",
-                "processing": "Procesando...",
-                "search": "Buscar:",
-                "zeroRecords": "No se encontraron coincidencias",
-                "paginate": {
-                    "first": "Primero",
-                    "last": "Último",
-                    "next": "Siguiente",
-                    "previous": "Anterior"
-                },
-                "aria": {
-                    "sortAscending": ": activate to sort column ascending",
-                    "sortDescending": ": activate to sort column descending"
-                }
-            }
-        });
-
-        $('select').material_select();
     }
 
     angular.element(document).ready(function () {

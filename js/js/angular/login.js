@@ -1,12 +1,18 @@
 app.controller('Login', function ($scope, Notification) {
+    $scope.servidor = 'http://35.231.233.240:3000/api';
+
     $scope.iniciarSesion = function () {
         if($scope.password !== undefined && $scope.password.length > 0 && $scope.email !== undefined && $scope.email.length > 0) {
             $scope.iniciando = true;
-            $.post('http://35.231.233.240:3000/api/Usuarios/login', {
+
+            $.ajax({
+                url: $scope.servidor + '/Usuarios/login',
+                type: 'post',
+                data: {
                     usuario: $scope.email,
                     password: $scope.password
-                },
-                function (data) {
+                } ,
+                success: function(data){
                     if (data.usuario !== null ) {
                         $scope.iniciando = false;
                         $scope.usuario = data;
@@ -27,7 +33,15 @@ app.controller('Login', function ($scope, Notification) {
                             replaceMessage: false
                         });
                     }
-                });
+                },
+                error: function(err){
+                    Notification.error({
+                        message: 'No es posible iniciar sesión en este momento, intente de nuevo más tarde.',
+                        delay: 4500,
+                        replaceMessage: false
+                    });
+                }
+            });
         } else {
             Notification.warning({
                 message: 'Ingrese el correo y contraseña.',

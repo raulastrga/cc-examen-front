@@ -1,9 +1,9 @@
-<div class="row" ng-init="initArticulos(true)">
+<div class="row" ng-init="initArticulos()">
     <div class="col s12 m12 l12 xl12">
         <div class="card">
             <div class="card-content">
                 <span class="card-title">Articulos registrados</span>
-                <table id="data-table-articulos" class="responsive-table display" cellspacing="0">
+                <table id="data-table-articulos" class="striped" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Clave Artículo</th>
@@ -46,25 +46,25 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s10">
+            <div class="input-field col s12 m10">
                 <input id="descripcion" type="text" ng-model="articuloNuevo.descripcion">
                 <label for="descripcion">Descripción</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s10">
+            <div class="input-field col s12 m10">
                 <input id="modelo" type="text" ng-model="articuloNuevo.modelo">
                 <label for="modelo">Modelo</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s10">
+            <div class="input-field col s12 m 10">
                 <input id="precio" type="text" ng-model="articuloNuevo.precio">
                 <label for="precio">Precio</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s6">
+            <div class="input-field col s4 m4">
                 <input id="existencia" type="number" min="1" minlength="1" ng-model="articuloNuevo.existencia">
                 <label for="existencia">Existencia</label>
             </div>
