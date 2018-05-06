@@ -224,6 +224,8 @@ app.controller('Index', function ($scope, Notification) {
                         delay: 4500,
                         replaceMessage: false
                     });
+
+                    $('#modalNuevoArticulo').modal('close');
                 }
             },
             error: function(err){
@@ -232,6 +234,8 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+
+                $('#modalNuevoArticulo').modal('close');
             }
         });
     }
@@ -483,6 +487,8 @@ app.controller('Index', function ($scope, Notification) {
                         delay: 4500,
                         replaceMessage: false
                     });
+
+                    $('#modalNuevoCliente').modal('close');
                 }
             },
             error: function(err){
@@ -491,6 +497,8 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+
+                $('#modalNuevoCliente').modal('close');
             }
         });
     }
@@ -849,6 +857,8 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+
+                $('#modalNuevaVenta').modal('close');
             }
         });
     }
