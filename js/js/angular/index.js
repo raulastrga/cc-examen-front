@@ -197,26 +197,34 @@ app.controller('Index', function ($scope, Notification) {
             url: $scope.servidor + '/Configuraciones',
             type: 'get',
             success: function(data){
-                data = data[0];
-                $scope.claveArticulo = data.ultimoArticulo + 1;
-                $scope.articuloNuevo = {};
+                if (data != null) {
+                    data = data[0];
+                    $scope.claveArticulo = data.ultimoArticulo + 1;
+                    $scope.articuloNuevo = {};
 
-                $scope.$apply();
+                    $scope.$apply();
 
-                //Se valida que sólo se ingresen numeros validos en precio
-                $("#precio").on('keypress', function(e){
-                    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
-                        e.stopImmediatePropagation();
-                        var key = window.event ? event.keyCode : event.which;
-                        if (event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 37 || event.keyCode == 39) {
-                            return true;
-                        } else if ( key < 48 || key > 57 ) {
-                            return false;
-                        } else {
-                            return true;
+                    //Se valida que sólo se ingresen numeros validos en precio
+                    $("#precio").on('keypress', function(e){
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+                            e.stopImmediatePropagation();
+                            var key = window.event ? event.keyCode : event.which;
+                            if (event.keyCode == 8 || event.keyCode == 46 || event.keyCode == 37 || event.keyCode == 39) {
+                                return true;
+                            } else if ( key < 48 || key > 57 ) {
+                                return false;
+                            } else {
+                                return true;
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Notification.error({
+                        message: 'Por favor ingrese primero las configuraciones del sistema.',
+                        delay: 4500,
+                        replaceMessage: false
+                    });
+                }
             },
             error: function(err){
                 Notification.error({
@@ -463,11 +471,19 @@ app.controller('Index', function ($scope, Notification) {
             url: $scope.servidor + '/Configuraciones',
             type: 'get',
             success: function(data){
-                data = data[0];
-                $scope.claveCliente = data.ultimoCliente + 1;
-                $scope.clienteNuevo = {};
+                if (data != null) {
+                    data = data[0];
+                    $scope.claveCliente = data.ultimoCliente + 1;
+                    $scope.clienteNuevo = {};
 
-                $scope.$apply();
+                    $scope.$apply();
+                } else {
+                    Notification.error({
+                        message: 'Por favor ingrese primero las configuraciones del sistema.',
+                        delay: 4500,
+                        replaceMessage: false
+                    });
+                }
             },
             error: function(err){
                 Notification.error({
@@ -817,7 +833,7 @@ app.controller('Index', function ($scope, Notification) {
                     $scope.detalleVenta = [];
                 } else {
                     Notification.error({
-                        message: 'Ocurrió un error al obtener la información completa, intente más tarde.',
+                        message: 'Por favor ingrese primero las configuraciones del sistema.',
                         delay: 4500,
                         replaceMessage: false
                     });
