@@ -55,11 +55,25 @@
               <label for="password">Contraseña</label>
             </div>
           </div>
-          <div class="row">
+          <div class="row" ng-show="!cargando">
             <div class="input-field col s12">
               <a ng-click="iniciarSesion()" class="btn waves-effect waves-light col s12 green darken-1">Iniciar Sesión</a>
             </div>
           </div>
+            <div class="input-field col s12 right-align" ng-show="cargando">
+            <div class="preloader-wrapper small active">
+              <div class="spinner-layer spinner-green-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            </div>
         </form>
       </div>
     </div>

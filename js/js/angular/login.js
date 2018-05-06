@@ -1,9 +1,10 @@
 app.controller('Login', function ($scope, Notification) {
+    $scope.cargando = false;
     $scope.servidor = 'http://35.231.233.240:3000/api';
 
     $scope.iniciarSesion = function () {
         if($scope.password !== undefined && $scope.password.length > 0 && $scope.email !== undefined && $scope.email.length > 0) {
-            $scope.iniciando = true;
+            $scope.cargando = true;
 
             $.ajax({
                 url: $scope.servidor + '/Usuarios/login',
@@ -14,16 +15,13 @@ app.controller('Login', function ($scope, Notification) {
                 } ,
                 success: function(data){
                     if (data.usuario !== null ) {
-                        $scope.iniciando = false;
                         $scope.usuario = data;
-
                         localStorage.setItem('usuario', JSON.stringify($scope.usuario));
 
                         //Reinicia los campos de control
                         $scope.correo = "";
                         $scope.password ="";
                         $scope.pagina = "ventas";
-                        $scope.$apply();
                 
                         document.location.href = $(location).attr('href').replace('login.html', 'index.html');
                     } else {
@@ -40,6 +38,11 @@ app.controller('Login', function ($scope, Notification) {
                         delay: 4500,
                         replaceMessage: false
                     });
+                },
+                complete: function(){
+                     //Quita el preloader
+                     $scope.cargando = false;
+                     $scope.$apply();
                 }
             });
         } else {

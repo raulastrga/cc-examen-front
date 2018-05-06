@@ -88,10 +88,6 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
-    
-                //Se reinician los valores por default
-                $scope.cargando = false;
-                $scope.$apply();
             },
             error: function(err){
                 Notification.error({
@@ -99,6 +95,11 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+            },
+            complete: function() {
+                //Se reinician los valores por default
+                $scope.cargando = false;
+                $scope.$apply();
             }
         });
     }
@@ -270,8 +271,6 @@ app.controller('Index', function ($scope, Notification) {
                 //Se cierra el modal de nuevo artículo y se reinician los valores
                 $scope.articuloNuevo = {};
                 $('#modalNuevoArticulo').modal('close');
-                $scope.cargando = false;
-                $scope.$apply();
     
                 //Se carga nuevamente la lista de artículos registrados
                 $scope.initArticulos();
@@ -282,6 +281,11 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+            },
+            complete: function() {
+                //Se quita el preloader
+                $scope.cargando = false;
+                $scope.$apply();
             }
         });
     }
@@ -337,8 +341,6 @@ app.controller('Index', function ($scope, Notification) {
                 //Se cierra el modal de editar artiíulo y se reinician los valores
                 $scope.articuloEditar = {};
                 $('#modalEditarArticulo').modal('close');
-                $scope.cargando = false;
-                $scope.$apply();
     
                 //Se carga nuevamente la lista de artículos registrados
                 $scope.initArticulos();
@@ -349,6 +351,11 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+            },
+            complete: function() {
+                //Se quita el preloader
+                $scope.cargando = false;
+                $scope.$apply();
             }
         });
     }
@@ -515,8 +522,6 @@ app.controller('Index', function ($scope, Notification) {
                 //Se cierra el modal de nuevo cliente y se reinician los valores
                 $scope.clienteNuevo = {};
                 $('#modalNuevoCliente').modal('close');
-                $scope.cargando = false;
-                $scope.$apply();
     
                 //Se carga nuevamente la lista de clientes registrados
                 $scope.initClientes();
@@ -527,6 +532,11 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+            },
+            complete: function() {
+                //Se quita el preloader
+                $scope.cargando = false;
+                $scope.$apply();
             }
         });
     }
@@ -582,8 +592,6 @@ app.controller('Index', function ($scope, Notification) {
                 //Se cierra el modal de editar cliente y se reinician los valores
                 $scope.clienteEditar = {};
                 $('#modalEditarCliente').modal('close');
-                $scope.cargando = false;
-                $scope.$apply();
     
                 //Se carga nuevamente la lista de clientes registrados
                 $scope.initClientes();
@@ -594,6 +602,11 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+            },
+            complete: function() {
+                //Se quita el preloader
+                $scope.cargando = false;
+                $scope.$apply();
             }
         });
     }
@@ -1052,11 +1065,7 @@ app.controller('Index', function ($scope, Notification) {
                 $scope.articuloSeleccionado = undefined;
                 $scope.clienteSeleccionado = undefined;
                 $scope.plazoSeleccionado = undefined;
-                $scope.cargando = false;
                 $scope.proceso = 'paso1';
-                $scope.$apply();
-
-                //Se cierra el modal
     
                 //Se carga nuevamente la lista de ventas registradas
                 $scope.initVentas();
@@ -1067,6 +1076,11 @@ app.controller('Index', function ($scope, Notification) {
                     delay: 4500,
                     replaceMessage: false
                 });
+            },
+            complete: function() {
+                //Se quita el preloader
+                $scope.cargando = false;
+                $scope.$apply();
             }
         });
     }
